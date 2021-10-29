@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,12 +30,12 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
     private ArrayList<RecyclerData> recyclerDataArrayList;
     View.OnClickListener listener;
+    ImageView like;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        getActivity().setTitle("HACK-IT");
 
         recyclerView=(RecyclerView) root.findViewById(R.id.idCourseRV);
 

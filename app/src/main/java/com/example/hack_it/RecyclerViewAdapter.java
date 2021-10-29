@@ -49,12 +49,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         private TextView courseTV;
         private ImageView courseIV;
+        private ImageView like;
 
         public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
             courseTV = itemView.findViewById(R.id.idTVCourse);
             courseIV = itemView.findViewById(R.id.idIVcourseIV);
             itemView.setOnClickListener(this);
+            like = itemView.findViewById(R.id.like_icon);
+            like.setOnClickListener(likeIcon);
         }
 
         @Override
@@ -62,5 +65,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             Toast.makeText(mcontext.getApplicationContext(),Integer.toString(getAdapterPosition()),Toast.LENGTH_SHORT).show();
 
         }
+        View.OnClickListener likeIcon = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                like.setBackgroundResource(R.drawable.ic_wishlist_red);
+            }
+        };
     }
 }

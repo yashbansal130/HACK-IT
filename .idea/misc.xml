@@ -4,12 +4,16 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable-v24/ic_nav_menu.xml" value="0.32685185185185184" />
+        <entry key="app/src/main/res/drawable/ic_wishlist.xml" value="0.3138888888888889" />
+        <entry key="app/src/main/res/drawable/ic_wishlist_red.xml" value="0.3138888888888889" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.18397291196388263" />
         <entry key="app/src/main/res/layout/card_layout.xml" value="0.264" />
         <entry key="app/src/main/res/layout/content_wish_list.xml" value="0.3229166666666667" />
         <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.3229166666666667" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.3229166666666667" />
+        <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.3223958333333333" />
         <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.1" />
+        <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.3229166666666667" />
         <entry key="app/src/main/res/menu/menulist.xml" value="0.3229166666666667" />
         <entry key="app/src/main/res/menu/navigation_drawer.xml" value="0.3229166666666667" />
       </map>

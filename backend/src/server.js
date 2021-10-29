@@ -8,7 +8,11 @@ const app = express();
 
 //routes
 app.get('/', (req, res) => {
-  res.send('Hello!! From Hack IT server..');
+  res.send(
+  {"heroes":[
+  {"name":"Spiderman","imageurl":"https:\/\/simplifiedcoding.net\/demos\/view-flipper\/images\/spiderman.jpg"}
+  ]
+  });
 });
 
 //server

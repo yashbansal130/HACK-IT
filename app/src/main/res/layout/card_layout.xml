@@ -36,8 +36,8 @@
                 android:layout_width="140dp"
                 android:layout_height="20dp"
                 android:layout_gravity="right"
+                android:id="@+id/like_icon"
                 android:clickable="true"
-                android:outlineAmbientShadowColor="@color/purple_700"
                 android:src="@drawable/ic_wishlist"/>
 
         </LinearLayout>
