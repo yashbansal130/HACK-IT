@@ -1,6 +1,7 @@
 package com.example.hack_it.ui.home;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,20 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.hack_it.R;
 import com.example.hack_it.RecyclerData;
 import com.example.hack_it.RecyclerViewAdapter;
 import com.example.hack_it.databinding.FragmentHomeBinding;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -31,49 +42,23 @@ public class HomeFragment extends Fragment {
     private ArrayList<RecyclerData> recyclerDataArrayList;
     View.OnClickListener listener;
     ImageView like;
+    private RequestQueue queue;
+    String url = "http://192.168.1.10:3000/";
+    ViewGroup viewGroup;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        recyclerView=(RecyclerView) root.findViewById(R.id.idCourseRV);
-
         // created new array list..
         recyclerDataArrayList=new ArrayList<>();
+        viewGroup=container;
 
-        // added data to array list
-        recyclerDataArrayList.add(new RecyclerData("Puma",R.drawable.shoes));
-        recyclerDataArrayList.add(new RecyclerData("Jordan",R.drawable.shoes));
-        recyclerDataArrayList.add(new RecyclerData("Nike",R.drawable.shoes));
-        recyclerDataArrayList.add(new RecyclerData("Adidas",R.drawable.shoes));
-        recyclerDataArrayList.add(new RecyclerData("Reebok",R.drawable.shoes));
-        recyclerDataArrayList.add(new RecyclerData("Puma",R.drawable.shoes));
-        recyclerDataArrayList.add(new RecyclerData("Jordan",R.drawable.shoes));
-        recyclerDataArrayList.add(new RecyclerData("Nike",R.drawable.shoes));
-        recyclerDataArrayList.add(new RecyclerData("Adidas",R.drawable.shoes));
-        recyclerDataArrayList.add(new RecyclerData("Reebok",R.drawable.shoes));
-        recyclerDataArrayList.add(new RecyclerData("Puma",R.drawable.shoes));
-        recyclerDataArrayList.add(new RecyclerData("Jordan",R.drawable.shoes));
-        recyclerDataArrayList.add(new RecyclerData("Nike",R.drawable.shoes));
-        recyclerDataArrayList.add(new RecyclerData("Adidas",R.drawable.shoes));
-        recyclerDataArrayList.add(new RecyclerData("Reebok",R.drawable.shoes));
-        recyclerDataArrayList.add(new RecyclerData("Puma",R.drawable.shoes));
-        recyclerDataArrayList.add(new RecyclerData("Jordan",R.drawable.shoes));
-        recyclerDataArrayList.add(new RecyclerData("Nike",R.drawable.shoes));
-        recyclerDataArrayList.add(new RecyclerData("Adidas",R.drawable.shoes));
-        recyclerDataArrayList.add(new RecyclerData("Reebok",R.drawable.shoes));
+        recyclerView=(RecyclerView) root.findViewById(R.id.idCourseRV);
+        queue = Volley.newRequestQueue(this.getContext());
+        queue.add(stringRequest);
 
-        // added data from arraylist to adapter class.
-        RecyclerViewAdapter adapter=new RecyclerViewAdapter(recyclerDataArrayList,container.getContext());
-//
-        // setting grid layout manager to implement grid view.
-        // in this method '2' represents number of columns to be displayed in grid view.
-        GridLayoutManager layoutManager=new GridLayoutManager( container.getContext(),2);
-//
-        // at last set adapter to recycler view.
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
         return root;
     }
 
@@ -82,4 +67,43 @@ public class HomeFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+    StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+            new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    JSONObject result = null;
+                    try {
+                        result = new JSONObject(response);
+                        JSONArray jsonArray = result.getJSONArray("shoes");
+                        int n=jsonArray.length();
+                        for(int i=0;i<n;i++){
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            String id=jsonObject.getString("id");
+                            String name=jsonObject.getString("name");
+                            String imageurl=jsonObject.getString("imageurl");
+                            recyclerDataArrayList.add(new RecyclerData(id, name, imageurl));
+                        }
+                        // added data from arraylist to adapter class.
+                        RecyclerViewAdapter adapter=new RecyclerViewAdapter(recyclerDataArrayList,viewGroup.getContext());
+//
+                        // setting grid layout manager to implement grid view.
+                        // in this method '2' represents number of columns to be displayed in grid view.
+                        GridLayoutManager layoutManager=new GridLayoutManager( viewGroup.getContext(),2);
+//
+                        // at last set adapter to recycler view.
+                        recyclerView.setLayoutManager(layoutManager);
+                        recyclerView.setAdapter(adapter);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.i("error", error.toString());
+                }
+            });
 }

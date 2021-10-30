@@ -2,12 +2,19 @@ package com.example.hack_it;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.hack_it.ui.WishListActivity;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
@@ -33,6 +40,10 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     public DrawerLayout drawerLayout;
     public NavigationMenuItemView analytics;
     private RelativeLayout layout;
+    private RequestQueue queue;
+    String url = "http://192.168.1.10:5000/";;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
         createSignInIntent();
+
+        queue = Volley.newRequestQueue(this);
+        queue.add(stringRequest);
     }
 
     private void configureToolbar() {
@@ -137,5 +153,30 @@ public class MainActivity extends AppCompatActivity {
         signInLauncher.launch(signInIntent);
         // [END auth_fui_create_intent]
     }
+
+    StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+            new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    JSONObject result = null;
+                    try {
+                        result = new JSONObject(response);
+                        JSONArray jsonArray = result.getJSONArray("heroes");
+                        JSONObject jsonObject = jsonArray.getJSONObject(0);
+                        String ans=jsonObject.getString("name");
+                        Log.i("yuhu", ans);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.i("error", error.toString());
+                }
+            });
 
 }

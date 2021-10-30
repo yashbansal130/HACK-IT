@@ -2,27 +2,31 @@ package com.example.hack_it;
 
 public class RecyclerData {
 
-    private String title;
-    private int imgid;
+    private String name;
+    private String id;
+    private String imageurl;
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getImgid() {
-        return imgid;
+    public String getImageurl() { return imageurl; }
+
+    public void setImageurl(String imageurl) {
+        this.imageurl = imageurl;
     }
 
-    public void setImgid(int imgid) {
-        this.imgid = imgid;
-    }
+    public String getId(){return id; }
 
-    public RecyclerData(String title, int imgid) {
-        this.title = title;
-        this.imgid = imgid;
+    public void setId(String id){ this.id=id; }
+
+    public RecyclerData(String id, String name, String imageurl) {
+        this.id = id;
+        this.name = name;
+        this.imageurl = imageurl;
     }
 }
