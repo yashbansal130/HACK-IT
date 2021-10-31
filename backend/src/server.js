@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
       "imageurl":"https://i5.walmartimages.com/asr/1be177f9-e6ce-48c0-b16f-6def283aedb9_1.32d3d77d65ccc3179dea8de024d880f6.jpeg?odnHeight=450&odnWidth=450&odnBg=FFFFFF"}
       ,{"id":"AVpfB-8RLJeJML4303Xb",
       "name":"AMERICAN FIGHTER",
-      "imageurl":"https://i5.walmartimages.com/asr/007911aa-3676-4a8b-a543-604d2a18b0b2_1.32eb854af877342900b2e72141100f54.jpeg?odnHeight=450&odnWidth=450&odnBg=FFFFFF,https://i5.walmartimages.com/asr/02ff5daa-135b-4369-b12d-a710e4ff501c_1.9cb06a064cde6b20fde3e183828aae01.jpeg?odnHeight=450&odnWidth=450&odnBg=FFFFFF"}
+      "imageurl":"https://i5.walmartimages.com/asr/02ff5daa-135b-4369-b12d-a710e4ff501c_1.9cb06a064cde6b20fde3e183828aae01.jpeg?odnHeight=450&odnWidth=450&odnBg=FFFFFF"}
       ,{"id":"AVpfJEaqLJeJML433Rz6",
       "name":"PUMA",
       "imageurl":"https://i5.walmartimages.com/asr/6c3f42c2-2fa0-46cc-9851-6062743eda03_1.fa694d632632709897d52fdca4991cdb.jpeg?odnHeight=450&odnWidth=450&odnBg=FFFFFF"}
@@ -58,6 +58,7 @@ app.get('/', (req, res) => {
   ]
   });
 });
+
 
 //server
 app.listen(process.env.PORT, () => {
