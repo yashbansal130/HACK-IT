@@ -11,10 +11,10 @@ router.get('/', async (req, res) => {
     if (snapshot.exists()) {
       res.send(snapshot.val());
     } else {
-      console.log('No data available');
+      res.send({ msg: 'No data available' });
     }
   } catch (error) {
-    console.error(error);
+    res.status(400).send('Server Error');
   }
 });
 
