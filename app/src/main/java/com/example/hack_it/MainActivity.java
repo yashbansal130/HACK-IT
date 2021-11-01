@@ -8,11 +8,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.hack_it.ui.WishListActivity;
@@ -51,10 +53,10 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     public DrawerLayout drawerLayout;
-    public NavigationMenuItemView analytics;
-    private RelativeLayout layout;
     private RequestQueue queue;
-    String url = "http://192.168.1.10:5000/";;
+    String url = "http://192.168.1.10:5000/";
+    String userUrl = "http://192.168.1.10:5000/users";
+    JSONObject userDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +67,8 @@ public class MainActivity extends AppCompatActivity {
 
         configureNavigationDrawer();
         configureToolbar();
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
                 .build();
@@ -76,8 +77,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
         createSignInIntent();
 
-        queue = Volley.newRequestQueue(this);
-        queue.add(stringRequest);
     }
 
     private void configureToolbar() {
@@ -136,9 +135,20 @@ public class MainActivity extends AppCompatActivity {
         IdpResponse response = result.getIdpResponse();
         if (result.getResultCode() == RESULT_OK) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            // ...
-        } else {
+            JSONObject userDetail = new JSONObject();
+            try {
+                userDetail.put("uid",user.getUid());
+                userDetail.put("name", user.getDisplayName());
+                userDetail.put("email", user.getEmail());
+                queue = Volley.newRequestQueue(this);
+                queue.add(userJson);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(this,"Error Occurred", Toast.LENGTH_SHORT).show();
+            }
 
+        } else {
+            Toast.makeText(this,"Login Failed", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -153,30 +163,27 @@ public class MainActivity extends AppCompatActivity {
         signInLauncher.launch(signInIntent);
         // [END auth_fui_create_intent]
     }
-
-    StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-            new Response.Listener<String>() {
+    JsonObjectRequest userJson = new JsonObjectRequest(Request.Method.POST, url,userDetail,
+            new Response.Listener<JSONObject>() {
                 @Override
-                public void onResponse(String response) {
-                    JSONObject result = null;
+                public void onResponse(JSONObject result) {
                     try {
-                        result = new JSONObject(response);
-                        JSONArray jsonArray = result.getJSONArray("heroes");
-                        JSONObject jsonObject = jsonArray.getJSONObject(0);
-                        String ans=jsonObject.getString("name");
-                        Log.i("yuhu", ans);
+                        if(result.getString("result")=="success"){
+                            Toast.makeText(MainActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            Toast.makeText(MainActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        Toast.makeText(MainActivity.this,"Error Occurred", Toast.LENGTH_SHORT).show();
                     }
-
-
                 }
             },
             new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.i("error", error.toString());
+
                 }
             });
-
 }
