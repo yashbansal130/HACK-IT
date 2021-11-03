@@ -6,6 +6,7 @@ const { database } = require('./firebase');
 
 const itemRoute = require('./routes/itemRoute');
 const userRoute = require('./routes/userRoute');
+const wishlist = require('./routes/wishlistRoute');
 //env variables
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 });
 app.use('/items', itemRoute);
 app.use('/users', userRoute);
+app.use('/wishlist', wishlist);
 //server
 app.listen(process.env.PORT, () => {
   console.log(`Server Up and Running 🚀🚀 on PORT: ${process.env.PORT}`);
