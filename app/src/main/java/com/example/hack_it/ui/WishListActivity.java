@@ -2,11 +2,13 @@ package com.example.hack_it.ui;
 
 import android.os.Bundle;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.hack_it.MainActivity;
 import com.example.hack_it.RecyclerViewAdapter;
@@ -35,6 +37,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class WishListActivity extends AppCompatActivity {
 
@@ -73,18 +77,9 @@ public class WishListActivity extends AppCompatActivity {
         String postUrl = "http://192.168.1.10:5000/"+user.getUid();
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-        JSONObject postData = new JSONObject();
-        try {
-            postData.put("id", user.getUid().toString());
-            groupNames.add(new WishlistData("person "+Integer.toString(groupNames.size()+1)));
-            postData.put("groupname", "Group"+Integer.toString(groupNames.size()));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, postUrl, postData, new Response.Listener<JSONObject>() {
+        StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, postUrl, new Response.Listener<String>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(String response) {
                 System.out.println(response);
             }
         }, new Response.ErrorListener() {
@@ -92,7 +87,14 @@ public class WishListActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
             }
-        });
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError{
+                Map<String, String> params = new HashMap<>();
+                return params;
+            }
+
+        };
         requestQueue.add(jsonObjectRequest);
     }
 
