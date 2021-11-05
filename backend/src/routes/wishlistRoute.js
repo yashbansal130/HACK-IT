@@ -71,6 +71,7 @@ router.post('/', async (req, res) => {
       set(ref(db, 'wishlist/' + groupId), {
         id: groupId,
         groupname: groupname,
+        selectedItems: [],
       });
       res.send({ msg: 'Success' });
     } else {
@@ -81,4 +82,35 @@ router.post('/', async (req, res) => {
   }
 });
 
+//POST add item to wishlist
+router.post('/additem', async (req, res) => {
+  const db = getDatabase();
+  const dbRef = ref(getDatabase());
+  const userID = req.body.userID;
+  const itemID = req.body.itemID;
+  const groupID = req.body.groupID;
+  try {
+    const snapshot = await get(child(dbRef, `wishlist/${groupID}`));
+    if (snapshot.exists()) {
+      const oldGroupName = snapshot.val().groupname;
+      const oldGroupId = snapshot.val().id;
+      const oldSelectedItems = snapshot.val().selectedItems
+        ? snapshot.val().selectedItems
+        : [];
+      set(ref(db, 'wishlist/' + groupID), {
+        groupname: oldGroupName,
+        id: oldGroupId,
+        selectedItems: oldSelectedItems
+          ? [...oldSelectedItems, { itemId: itemID, addedById: userID }]
+          : oldSelectedItems,
+      });
+      res.send({ msg: 'Success' });
+    } else {
+      res.send({ msg: 'failure' });
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(400).send({ msg: 'failure' });
+  }
+});
 module.exports = router;
