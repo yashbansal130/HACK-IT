@@ -32,13 +32,12 @@
                 android:layout_height="wrap_content"
                 android:text="@string/app_name"
                 android:textAlignment="center" />
-            <ImageView
-                android:layout_width="140dp"
-                android:layout_height="20dp"
-                android:layout_gravity="right"
-                android:id="@+id/like_icon"
-                android:clickable="true"
-                android:src="@drawable/ic_wishlist"/>
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner"
+                android:layout_gravity="right" />
+
 
         </LinearLayout>
 

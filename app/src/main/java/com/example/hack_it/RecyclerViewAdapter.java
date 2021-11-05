@@ -1,38 +1,46 @@
 package com.example.hack_it;
 import android.content.Context;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
 
     private ArrayList<RecyclerData> courseDataArrayList;
     private Context mcontext;
-    String url = "";
+    private ArrayAdapter<String> dataAdapter;
+    private ArrayList<Pair<String, String>> wishlist;
+    private ArrayList<String> groups;
 
-    public RecyclerViewAdapter(ArrayList<RecyclerData> recyclerDataArrayList, Context mcontext) {
+    public RecyclerViewAdapter(ArrayList<RecyclerData> recyclerDataArrayList, Context mcontext, ArrayList<android.util.Pair<String, String>> group) {
         this.courseDataArrayList = recyclerDataArrayList;
         this.mcontext = mcontext;
+        this.wishlist = group;
+        groups = new ArrayList<>();
+        for(int i=0;i<group.size();i++){
+            groups.add(group.get(i).first);
+        }
+        dataAdapter = new ArrayAdapter<String>(mcontext,
+                android.R.layout.simple_spinner_item,this.groups);
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
     }
+
+
 
     @NonNull
     @Override
@@ -48,6 +56,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         RecyclerData recyclerData = courseDataArrayList.get(position);
         holder.courseTV.setText(recyclerData.getName());
         Picasso.get().load(recyclerData.getImageurl()).into(holder.courseIV);
+        holder.spinner.setAdapter(dataAdapter);
     }
 
     @Override
@@ -61,15 +70,28 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         private TextView courseTV;
         private ImageView courseIV;
-        private ImageView like;
+        private Spinner spinner;
 
         public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
             courseTV = itemView.findViewById(R.id.idTVCourse);
             courseIV = itemView.findViewById(R.id.idIVcourseIV);
             itemView.setOnClickListener(this);
-            like = itemView.findViewById(R.id.like_icon);
-            like.setOnClickListener(likeIcon);
+            spinner=itemView.findViewById(R.id.spinner);
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    String id= wishlist.get(i).second;
+                    //Toast.makeText(adapterView.getContext(), "Selected: " + id, Toast.LENGTH_SHORT).show();
+                    postItem();
+
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                    Toast.makeText(adapterView.getContext(), "hello", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         @Override
@@ -77,37 +99,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             Toast.makeText(mcontext.getApplicationContext(),Integer.toString(getAdapterPosition()),Toast.LENGTH_SHORT).show();
 
         }
-        View.OnClickListener likeIcon = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RequestQueue queue;
+    }
 
-                queue = Volley.newRequestQueue(mcontext.getApplicationContext());
-                queue.add(jsonObjectRequest);
-
-            }
-        };
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONArray jsonArray = response.getJSONArray("wishlists");
-                    int size = jsonArray.length();
-                    for(int i=0;i<size;i++){
-                        JSONObject list = jsonArray.getJSONObject(i);
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
+    private void postItem(){
 
     }
 

@@ -2,6 +2,7 @@ package com.example.hack_it.ui.home;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +15,23 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.hack_it.R;
 import com.example.hack_it.RecyclerData;
 import com.example.hack_it.RecyclerViewAdapter;
+import com.example.hack_it.WishlistAdapter;
+import com.example.hack_it.WishlistData;
 import com.example.hack_it.databinding.FragmentHomeBinding;
+import com.example.hack_it.ui.WishListActivity;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +51,7 @@ public class HomeFragment extends Fragment {
     private RequestQueue queue;
     String url = "http://192.168.1.10:5000/items/";
     ViewGroup viewGroup;
+    ArrayList<Pair<String , String>> wishlistNames;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
@@ -57,7 +65,7 @@ public class HomeFragment extends Fragment {
         recyclerView=(RecyclerView) root.findViewById(R.id.idCourseRV);
         queue = Volley.newRequestQueue(this.getContext());
         queue.add(stringRequest);
-
+        wishlistNames = new ArrayList<>();
         return root;
     }
 
@@ -84,16 +92,7 @@ public class HomeFragment extends Fragment {
                             Log.i("hi", name);
                             recyclerDataArrayList.add(new RecyclerData(id, name, imageurl));
                         }
-                        // added data from arraylist to adapter class.
-                        RecyclerViewAdapter adapter=new RecyclerViewAdapter(recyclerDataArrayList,viewGroup.getContext());
-//
-                        // setting grid layout manager to implement grid view.
-                        // in this method '2' represents number of columns to be displayed in grid view.
-                        GridLayoutManager layoutManager=new GridLayoutManager( viewGroup.getContext(),2);
-//
-                        // at last set adapter to recycler view.
-                        recyclerView.setLayoutManager(layoutManager);
-                        recyclerView.setAdapter(adapter);
+                        volleyGet();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -105,4 +104,48 @@ public class HomeFragment extends Fragment {
                     Log.i("error", error.toString());
                 }
             });
+
+    public void volleyGet(){
+        String url="http://192.168.1.10:5000/users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid();
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i("info", response.toString());
+                        JSONArray jsonArray = null;
+                        try {
+                            jsonArray = response.getJSONArray("wishlist");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Log.i("info", jsonArray.toString());
+                        for(int i=0;i<jsonArray.length();i++){
+                            try {
+                                JSONObject temp = jsonArray.getJSONObject(i);
+
+                                wishlistNames.add(new Pair(temp.getString("groupname"), temp.getString("id")));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        RecyclerViewAdapter adapter=new RecyclerViewAdapter(recyclerDataArrayList,viewGroup.getContext(), wishlistNames);
+//
+                        // setting grid layout manager to implement grid view.
+                        // in this method '2' represents number of columns to be displayed in grid view.
+                        GridLayoutManager layoutManager=new GridLayoutManager( viewGroup.getContext(),2);
+//
+                        // at last set adapter to recycler view.
+                        recyclerView.setLayoutManager(layoutManager);
+                        recyclerView.setAdapter(adapter);
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
+    }
 }

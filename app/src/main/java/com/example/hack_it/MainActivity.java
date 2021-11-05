@@ -214,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
             Log.i("hi", "hi");
             signIn();
         }
+        //mAuth.signOut();
     }
 
     private void firebaseAuthWithGoogle(String idToken) {
