@@ -18,7 +18,19 @@ router.get('/:id', async (req, res) => {
     res.status(400).send('Server Error');
   }
 });
-
+// GET all user info
+router.get('/', async (req, res) => {
+  const db = getDatabase();
+  const dbRef = ref(getDatabase());
+  try {
+    const snapshot = await get(child(dbRef, `users/`));
+    if (snapshot.exists()) {
+      res.send(snapshot.val());
+    }
+  } catch (error) {
+    res.status(400).send({ msg: 'failure' });
+  }
+});
 //POST to add user to database
 router.post('/', async (req, res) => {
   const db = getDatabase();
