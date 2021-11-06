@@ -12,7 +12,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.firebase.auth.FirebaseAuth;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class NewGroupActivity extends AppCompatActivity {
     ArrayList<String> members;
@@ -25,6 +41,10 @@ public class NewGroupActivity extends AppCompatActivity {
     TextView membersTextview;
     Button newMemberButton;
     private int c;
+    RequestQueue requestQueue;
+    Map<String , String> mails;
+    Map<String , String> newMembers;
+    String url = "http://192.168.1.10:3000/users";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +59,8 @@ public class NewGroupActivity extends AppCompatActivity {
         members = new ArrayList<>();
         groupName = new ArrayList<>();
         data = new ArrayList<>();
+        newMembers = new HashMap<>();
+        getAllUsers();
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,16 +80,21 @@ public class NewGroupActivity extends AppCompatActivity {
                 if(groupName.isEmpty()){
                     Toast.makeText(NewGroupActivity.this, "Enter Group Name", Toast.LENGTH_SHORT).show();
                 }
-                if(members.isEmpty()){
+                else if(newMembers.isEmpty()){
                     Toast.makeText(NewGroupActivity.this, "Group Members cannot be None", Toast.LENGTH_SHORT).show();
                 }
                 else{
-//                    Intent intent=new Intent();
-//                    data.add(groupName);
-//                    data.add(members);
-//                    intent.putExtra("MESSAGE",data);
-//                    setResult(2,intent);
-//                    finish();//finishing activity
+                    Intent intent=new Intent();
+                    data.add(groupName);
+                    int n = newMembers.size();
+                    for (Map.Entry mapElement : newMembers.entrySet()) {
+                        String id = (String) mapElement.getValue();
+                        members.add(id);
+                    }
+                    data.add(members);
+                    intent.putExtra("MESSAGE",data);
+                    setResult(2,intent);
+                    finish();//finishing activity
                 }
             }
         });
@@ -78,12 +105,19 @@ public class NewGroupActivity extends AppCompatActivity {
                 String member = membersTextview.getText().toString();
                 if(!Patterns.EMAIL_ADDRESS.matcher(newMember).matches()){
                     Toast.makeText(NewGroupActivity.this, "Enter a valid email", Toast.LENGTH_SHORT).show();
-                }else{
+                }
+                else if(newMember.equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                    Toast.makeText(NewGroupActivity.this, "Email cannot be of the group leader", Toast.LENGTH_SHORT).show();
+                }
+                else if(!newMembers.containsKey(newMember) && mails.containsKey(newMember)){
                     newMemberEdit.setText("");
-                    members.add(member);
+                    newMembers.put(newMember, mails.get(newMember));
                     member+="\n"+newMember;
                     membersTextview.setText(member);
                     c+=1;
+                }
+                else{
+                    Toast.makeText(NewGroupActivity.this, "This user does not exist or already addded please try again", Toast.LENGTH_SHORT).show();
                 }
                 if(c==2){
                     newMemberButton.setClickable(false);
@@ -91,5 +125,32 @@ public class NewGroupActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void getAllUsers(){
+        requestQueue = Volley.newRequestQueue(getApplicationContext());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                JSONArray jsonArray = response.names();
+                mails = new HashMap<>();
+                int n = jsonArray.length();
+                for(int i=0;i<n;i++){
+                    try {
+                        String id =jsonArray.getString(i);
+                        JSONObject jsonObject = response.getJSONObject(id);
+                        mails.put(jsonObject.getString("email"), jsonObject.getString("id"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
     }
 }

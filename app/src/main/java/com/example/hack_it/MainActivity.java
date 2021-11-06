@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     public DrawerLayout drawerLayout;
     private RequestQueue queue;
-    String userUrl = "http://192.168.1.10:5000/users";
+    String userUrl = "http://192.168.1.10:3000/users";
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
@@ -150,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(String result) {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
-                        Log.i("msg", jsonObject.getString("msg"));
                         if(jsonObject.getString("msg").equals("Success")){
                             Toast.makeText(MainActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                         }
@@ -166,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
             new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.i("error", error.toString());
+                    Log.e("Error", error.toString());
                 }
             }){
         @Override
@@ -211,7 +210,6 @@ public class MainActivity extends AppCompatActivity {
             updateUI(currentUser);
         }
         else{
-            Log.i("hi", "hi");
             signIn();
         }
         //mAuth.signOut();
@@ -230,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.i("erererf", "signInWithCredential:failure", task.getException());
+                            Log.e("Login Error", "signInWithCredential:failure", task.getException());
                         }
                     }
                 });
@@ -239,7 +237,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateUI(FirebaseUser user) {
-        Log.i("user", user.getDisplayName());
         queue = Volley.newRequestQueue(MainActivity.this);
         queue.add(userJson);
     }

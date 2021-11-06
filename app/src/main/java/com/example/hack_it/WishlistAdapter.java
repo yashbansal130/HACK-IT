@@ -1,6 +1,8 @@
 package com.example.hack_it;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.hack_it.ui.WishListActivity;
 
 import java.util.ArrayList;
 
@@ -40,7 +44,10 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.MyView
             @Override
             public void onClick(View view) {
                 // display a toast with person name on item click
-                Toast.makeText(context, holder.getAdapterPosition(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, Integer.toString(holder.getAdapterPosition()), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, GroupActivity.class);
+                intent.putExtra("data", groupNames.get(holder.getAdapterPosition()).getId());
+                context.startActivity(intent);
             }
         });
     }

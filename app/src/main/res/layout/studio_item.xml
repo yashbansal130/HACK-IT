@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/studio_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="serif"
+        android:text="Yash Bansal"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/studio_name"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="12dp"
+        android:text="Follow"
+        android:textSize="18dp"
+        android:textColor="#FF0000"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Few Days Ago"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="1dp"
+        android:layout_below="@+id/studio_name"/>
+
+    <ImageView
+        android:id="@+id/studio_image"
+        android:layout_width="400dp"
+        android:layout_height="550dp"
+        android:layout_below="@+id/studio_name"
+        android:layout_marginTop="20dp"
+        android:src="@color/fui_bgEmail" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/studio_caption"
+        android:layout_marginBottom="-12dp"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/studio_like"
+        android:src="@drawable/ic_baseline_favorite_border_24" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/studio_like"
+        android:layout_marginBottom="-10dp"
+        android:layout_marginLeft="3dp"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        android:layout_above="@+id/studio_caption"
+        android:text="159"/>
+
+    <TextView
+        android:id="@+id/studio_caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/studio_image"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        android:text="The Happiest time of year is almost here and my wardrobe is all set with great ethnic fits for me!"
+        android:textSize="16dp" />
+
+</RelativeLayout>

@@ -1,16 +1,14 @@
-package com.example.hack_it.ui.home;
+package com.example.hack_it.ui.Studio;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class HomeViewModel extends ViewModel {
+public class StudioViewModel extends ViewModel {
 
 
-
-    public HomeViewModel() {
+    public StudioViewModel() {
 
     }
-
 
 }

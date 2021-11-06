@@ -38,6 +38,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -45,7 +46,6 @@ import java.util.Map;
 
 public class WishListActivity extends AppCompatActivity {
 
-    private AppBarConfiguration appBarConfiguration;
     private ActivityWishListBinding binding;
     RecyclerView recyclerView;
     WishlistAdapter customAdapter;
@@ -78,19 +78,18 @@ public class WishListActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==2)
         {
-            String message=data.getStringExtra("MESSAGE");
-            volleyPost(message);
+            ArrayList<ArrayList<String>> groupData=(ArrayList<ArrayList<String>>) data.getSerializableExtra("MESSAGE");
+            volleyPost(groupData);
         }
     }
-    public void volleyPost(String name){
+    public void volleyPost(ArrayList<ArrayList<String>> groupData){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String postUrl = "http://192.168.1.10:5000/wishlist";
+        String postUrl = "http://192.168.1.10:3000/wishlist";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, postUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                System.out.println(response);
                 customAdapter.notifyItemInserted(groupNames.size()-1);
             }
         }, new Response.ErrorListener() {
@@ -100,10 +99,13 @@ public class WishListActivity extends AppCompatActivity {
             }
         }){
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError{
+            protected Map<String,String> getParams() throws AuthFailureError{
                 Map<String, String> params = new HashMap<>();
                 params.put("id", FirebaseAuth.getInstance().getCurrentUser().getUid());
-                params.put("groupname", name);
+                params.put("groupname", groupData.get(0).get(0));
+                for(int i=0;i<groupData.size();i++){
+                    params.put("member", groupData.get(1).get(i));
+                }
                 return params;
             }
 
@@ -111,26 +113,27 @@ public class WishListActivity extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
     }
     public void volleyGet(){
-        String url="http://192.168.1.10:5000/users/"+FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String url="http://192.168.1.10:3000/users/"+FirebaseAuth.getInstance().getCurrentUser().getUid();
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.i("info", response.toString());
+                        JSONObject jsonObject = null;
                         JSONArray jsonArray = null;
                         try {
-                            jsonArray = response.getJSONArray("wishlist");
+                            jsonObject = response.getJSONObject("wishlist");
+                            jsonArray = jsonObject.names();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        Log.i("info", jsonArray.toString());
                         for(int i=0;i<jsonArray.length();i++){
                             try {
-                                JSONObject temp = jsonArray.getJSONObject(i);
-                                String group = temp.getString("groupname");
-                                groupNames.add(new WishlistData(group));
-                                Log.i("name", group);
+                                JSONObject temp = jsonObject.getJSONObject(jsonArray.getString(i));
+                                String groupname = temp.getString("groupname");
+                                String groupId = temp.getString("id");
+                                groupNames.add(new WishlistData(groupname, groupId));
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

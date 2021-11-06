@@ -29,4 +29,6 @@ public class RecyclerData {
         this.name = name;
         this.imageurl = imageurl;
     }
+
+
 }

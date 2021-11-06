@@ -13,14 +13,16 @@
         android:theme="@style/Theme.HACKIT"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".GroupActivity"
+            android:exported="true" />
+        <activity
             android:name=".NewGroupActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".ui.WishListActivity"
             android:exported="true"
             android:label="@string/title_activity_wish_list"
-            android:theme="@style/Theme.HACKIT.NoActionBar"></activity>
+            android:theme="@style/Theme.HACKIT.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

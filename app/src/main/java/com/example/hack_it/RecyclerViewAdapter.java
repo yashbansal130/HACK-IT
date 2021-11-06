@@ -1,5 +1,6 @@
 package com.example.hack_it;
 import android.content.Context;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +15,21 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.firebase.ui.auth.data.model.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
 
@@ -83,7 +97,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     String id= wishlist.get(i).second;
                     //Toast.makeText(adapterView.getContext(), "Selected: " + id, Toast.LENGTH_SHORT).show();
-                    postItem();
+                    postItem( i, getAdapterPosition());
 
                 }
 
@@ -101,8 +115,35 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
-    private void postItem(){
+    private void postItem(int i,int pos){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String wishlistId = wishlist.get(i).second;
+        String itemId = courseDataArrayList.get(pos).getId();
+        String url = "http://192.168.1.10:3000/wishlist/additem";
 
+        RequestQueue requestQueue = Volley.newRequestQueue(mcontext.getApplicationContext());
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("userID", user.getUid());
+                params.put("groupID", wishlistId);
+                params.put("itemID", itemId);
+                Log.i("info", user.getUid()+" "+wishlistId+" "+itemId);
+                return params;
+            }
+        };
+        requestQueue.add(stringRequest);
     }
 
 }

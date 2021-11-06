@@ -49,7 +49,7 @@ public class HomeFragment extends Fragment {
     View.OnClickListener listener;
     ImageView like;
     private RequestQueue queue;
-    String url = "http://192.168.1.10:5000/items/";
+    String url = "http://192.168.1.10:3000/items/";
     ViewGroup viewGroup;
     ArrayList<Pair<String , String>> wishlistNames;
 
@@ -83,13 +83,11 @@ public class HomeFragment extends Fragment {
                         result = new JSONObject(response);
                         JSONArray jsonArray =result.names();
                         int n=jsonArray.length();
-                        Log.i("length", Integer.toString(n));
                         for(int i=0;i<n;i++){
                             JSONObject jsonObject= (JSONObject) result.get(result.names().getString(i));
                             String id=jsonObject.getString("id");
                             String name=jsonObject.getString("name");
                             String imageurl=jsonObject.getString("imageurl");
-                            Log.i("hi", name);
                             recyclerDataArrayList.add(new RecyclerData(id, name, imageurl));
                         }
                         volleyGet();
@@ -106,23 +104,24 @@ public class HomeFragment extends Fragment {
             });
 
     public void volleyGet(){
-        String url="http://192.168.1.10:5000/users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String url="http://192.168.1.10:3000/users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.i("info", response.toString());
-                        JSONArray jsonArray = null;
+                        Log.i("data", response.toString());
+                        JSONObject jsonObject = null;
                         try {
-                            jsonArray = response.getJSONArray("wishlist");
+                            jsonObject = response.getJSONObject("wishlist");
+                            Log.i("data", jsonObject.toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        Log.i("info", jsonArray.toString());
+                        JSONArray jsonArray = jsonObject.names();
                         for(int i=0;i<jsonArray.length();i++){
                             try {
-                                JSONObject temp = jsonArray.getJSONObject(i);
+                                JSONObject temp = jsonObject.getJSONObject(jsonArray.getString(i));
 
                                 wishlistNames.add(new Pair(temp.getString("groupname"), temp.getString("id")));
                             } catch (JSONException e) {
