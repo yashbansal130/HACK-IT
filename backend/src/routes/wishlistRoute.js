@@ -49,10 +49,12 @@ router.post('/', async (req, res) => {
   const dbRef = ref(getDatabase());
   const userId = req.body.id;
   const groupname = req.body.groupname;
+  const memberId = req.body.member1;
   const groupId = uuidv4();
   try {
     // get old userinfo
     const snapshot = await get(child(dbRef, `users/${userId}`));
+    const snapshot1 = await get(child(dbRef, `users/${userId}`));
     if (snapshot.exists()) {
       const oldUserName = snapshot.val().name;
       const oldUserEmail = snapshot.val().email;
@@ -67,6 +69,23 @@ router.post('/', async (req, res) => {
           ? [...oldUserWishlist, { id: groupId, groupname }]
           : [{ id: groupId, groupname }],
       });
+      //add member to wishList
+      if (snapshot1.exists()) {
+        const oldMemberName = snapshot1.val().name;
+        const oldMemberEmail = snapshot1.val().email;
+        const oldMemberId = snapshot1.val().id;
+        const oldMemberWishlist = snapshot1.val().wishlist;
+        set(ref(db, 'users/' + memberId), {
+          name: oldMemberName,
+          email: oldMemberEmail,
+          id: memberId,
+          wishlist: oldMemberWishlist
+            ? [...oldMemberWishlist, { id: groupId, groupname }]
+            : [{ id: groupId, groupname }],
+        });
+      } else {
+        return res.send({ msg: 'failure' });
+      }
       //add wishlist to collection
       set(ref(db, 'wishlist/' + groupId), {
         id: groupId,
