@@ -44,6 +44,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.mcontext = mcontext;
         this.wishlist = group;
         groups = new ArrayList<>();
+        groups.add("Choose Group");
         for(int i=0;i<group.size();i++){
             groups.add(group.get(i).first);
         }
@@ -80,7 +81,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     // View Holder Class to handle Recycler View.
-    public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
         private TextView courseTV;
         private ImageView courseIV;
@@ -90,15 +91,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             super(itemView);
             courseTV = itemView.findViewById(R.id.idTVCourse);
             courseIV = itemView.findViewById(R.id.idIVcourseIV);
-            itemView.setOnClickListener(this);
             spinner=itemView.findViewById(R.id.spinner);
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    String id= wishlist.get(i).second;
-                    //Toast.makeText(adapterView.getContext(), "Selected: " + id, Toast.LENGTH_SHORT).show();
-                    postItem( i, getAdapterPosition());
-
+                    if(i>0){
+                        String id= wishlist.get(i-1).second;
+                        postItem( i-1, getAdapterPosition());
+                    }
                 }
 
                 @Override
@@ -107,19 +107,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
             });
         }
-
-        @Override
-        public void onClick(View view) {
-            Toast.makeText(mcontext.getApplicationContext(),Integer.toString(getAdapterPosition()),Toast.LENGTH_SHORT).show();
-
-        }
     }
 
     private void postItem(int i,int pos){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String wishlistId = wishlist.get(i).second;
         String itemId = courseDataArrayList.get(pos).getId();
-        String url = "http://192.168.1.10:3000/wishlist/additem";
+        String url = R.string.url+"wishlist/additem";
 
         RequestQueue requestQueue = Volley.newRequestQueue(mcontext.getApplicationContext());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {

@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
   try {
     // get old userinfo
     const snapshot = await get(child(dbRef, `users/${userId}`));
-    const snapshot1 = await get(child(dbRef, `users/${userId}`));
+    const snapshot1 = await get(child(dbRef, `users/${memberId}`));
     if (snapshot.exists()) {
       const oldUserName = snapshot.val().name;
       const oldUserEmail = snapshot.val().email;

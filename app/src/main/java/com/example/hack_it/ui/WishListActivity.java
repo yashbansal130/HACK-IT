@@ -84,7 +84,7 @@ public class WishListActivity extends AppCompatActivity {
     }
     public void volleyPost(ArrayList<ArrayList<String>> groupData){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String postUrl = "http://192.168.1.10:3000/wishlist/";
+        String postUrl = R.string.url+"wishlist/";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, postUrl, new Response.Listener<String>() {
@@ -112,7 +112,7 @@ public class WishListActivity extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
     }
     public void volleyGet(){
-        String url="http://192.168.1.10:3000/users/"+FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String url=R.string.url+"users/"+FirebaseAuth.getInstance().getCurrentUser().getUid();
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
