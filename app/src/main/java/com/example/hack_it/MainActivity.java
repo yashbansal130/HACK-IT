@@ -239,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateUI(FirebaseUser user) {
         queue = Volley.newRequestQueue(MainActivity.this);
         queue.add(userJson);
+        Log.i("user", user.getEmail());
     }
 
 }

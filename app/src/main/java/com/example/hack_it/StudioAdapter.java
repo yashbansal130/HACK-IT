@@ -25,13 +25,11 @@ public class StudioAdapter extends RecyclerView.Adapter<StudioAdapter.StudioView
 
     Context mcontext;
     ArrayList<StudioData> studioDataArrayList;
-    Post[] posts;
+    ArrayList<Post> posts;
 
-    public StudioAdapter(ArrayList<StudioData> studioDataArrayList, Context mcontext, Post[] posts) {
+    public StudioAdapter(ArrayList<StudioData> studioDataArrayList, Context mcontext) {
         this.studioDataArrayList = studioDataArrayList;
         this.mcontext = mcontext;
-        this.posts=posts;
-
     }
 
     @NonNull
@@ -47,6 +45,7 @@ public class StudioAdapter extends RecyclerView.Adapter<StudioAdapter.StudioView
         StudioData studioData = studioDataArrayList.get(position);
         holder.studioName.setText(studioData.getName());
         holder.studioCaption.setText(studioData.getCaption());
+        posts=studioData.getPosts();
         ArrayList<Fragment> fragments = new ArrayList<>();
         for(Post post: posts){
             Log.i("hi", Integer.toString(post.getImage()));

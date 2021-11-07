@@ -111,21 +111,22 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.i("data", response.toString());
-                        JSONObject jsonObject = null;
+                        JSONArray jsonArray=null;
                         try {
-                            jsonObject = response.getJSONObject("wishlist");
-                            Log.i("data", jsonObject.toString());
+                            jsonArray = response.getJSONArray("wishlist");
+                            Log.i("data", jsonArray.toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        JSONArray jsonArray = jsonObject.names();
-                        for(int i=0;i<jsonArray.length();i++){
-                            try {
-                                JSONObject temp = jsonObject.getJSONObject(jsonArray.getString(i));
+                        if(jsonArray!=null){
+                            for(int i=0;i<jsonArray.length();i++){
+                                try {
+                                    JSONObject temp = jsonArray.getJSONObject(i);
 
-                                wishlistNames.add(new Pair(temp.getString("groupname"), temp.getString("id")));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                    wishlistNames.add(new Pair(temp.getString("groupname"), temp.getString("id")));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                         RecyclerViewAdapter adapter=new RecyclerViewAdapter(recyclerDataArrayList,viewGroup.getContext(), wishlistNames);

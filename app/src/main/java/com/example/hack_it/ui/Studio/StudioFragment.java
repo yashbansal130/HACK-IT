@@ -28,7 +28,6 @@ public class StudioFragment extends Fragment {
     ViewGroup viewGroup;
     RecyclerView recyclerView;
     private ArrayList<StudioData> studioDataArrayList;
-    Post[] posts;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -51,15 +50,18 @@ public class StudioFragment extends Fragment {
         super.onStart();
         recyclerView =(RecyclerView) viewGroup.findViewById(R.id.studioRV);
         studioDataArrayList = new ArrayList<>();
+        ArrayList<Post> post1 = new ArrayList<>(), post2 = new ArrayList<>();
         Post gauravPandey = new Post(R.mipmap.frame5);
         Post gauravPandeyorginal = new Post(R.mipmap.frame5original);
-        Post Tejeswar = new Post(R.mipmap.frame5);
-        Post Tejeswaroriginal = new Post(R.mipmap.frame5original);
-        posts = new Post[]{gauravPandeyorginal, gauravPandey};
-        studioDataArrayList.add(new StudioData("The Happiest time of year is almost here and my wardrobe is all set with great ethnic fits for me!", "Gaurav Pandey"));
-        posts = new Post[]{Tejeswaroriginal, Tejeswar};
-        studioDataArrayList.add(new StudioData("", "Tejeshwar Sandhoo"));
-        StudioAdapter adapter=new StudioAdapter(studioDataArrayList,viewGroup.getContext(), posts);
+        Post Tejeswar = new Post(R.mipmap.frame1);
+        Post Tejeswaroriginal = new Post(R.mipmap.frame1original);
+        post1.add(gauravPandeyorginal);
+        post1.add(gauravPandey);
+        studioDataArrayList.add(new StudioData("The Happiest time of year is almost here and my wardrobe is all set with great ethnic fits for me!", "Gaurav Pandey", post1));
+        post2.add(Tejeswaroriginal);
+        post2.add(Tejeswar);
+        studioDataArrayList.add(new StudioData("Trying to feel one with the nature in this Black & Olivegreen and Printed straight kurta from Anouk", "Tejeshwar Sandhoo", post2));
+        StudioAdapter adapter=new StudioAdapter(studioDataArrayList,viewGroup.getContext());
 //
         // setting grid layout manager to implement grid view.
         // in this method '1' represents number of columns to be displayed in grid view.
