@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.hack_it.Post;
 import com.example.hack_it.R;
 import com.example.hack_it.StudioAdapter;
 import com.example.hack_it.StudioData;
@@ -27,6 +28,7 @@ public class StudioFragment extends Fragment {
     ViewGroup viewGroup;
     RecyclerView recyclerView;
     private ArrayList<StudioData> studioDataArrayList;
+    Post[] posts;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -49,8 +51,15 @@ public class StudioFragment extends Fragment {
         super.onStart();
         recyclerView =(RecyclerView) viewGroup.findViewById(R.id.studioRV);
         studioDataArrayList = new ArrayList<>();
-        studioDataArrayList.add(new StudioData("The Happiest time of year is almost here and my wardrobe is all set with great ethnic fits for me!", "Gaurav Pandey", R.mipmap.frame5));
-        StudioAdapter adapter=new StudioAdapter(studioDataArrayList,viewGroup.getContext());
+        Post gauravPandey = new Post(R.mipmap.frame5);
+        Post gauravPandeyorginal = new Post(R.mipmap.frame5original);
+        Post Tejeswar = new Post(R.mipmap.frame5);
+        Post Tejeswaroriginal = new Post(R.mipmap.frame5original);
+        posts = new Post[]{gauravPandeyorginal, gauravPandey};
+        studioDataArrayList.add(new StudioData("The Happiest time of year is almost here and my wardrobe is all set with great ethnic fits for me!", "Gaurav Pandey"));
+        posts = new Post[]{Tejeswaroriginal, Tejeswar};
+        studioDataArrayList.add(new StudioData("", "Tejeshwar Sandhoo"));
+        StudioAdapter adapter=new StudioAdapter(studioDataArrayList,viewGroup.getContext(), posts);
 //
         // setting grid layout manager to implement grid view.
         // in this method '1' represents number of columns to be displayed in grid view.
