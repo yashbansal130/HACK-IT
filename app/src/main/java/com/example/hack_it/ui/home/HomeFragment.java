@@ -49,7 +49,7 @@ public class HomeFragment extends Fragment {
     View.OnClickListener listener;
     ImageView like;
     private RequestQueue queue;
-    String url = R.string.url+"items/";
+    String url = "http://192.168.1.10:5000/items/";
     ViewGroup viewGroup;
     ArrayList<Pair<String , String>> wishlistNames;
 
@@ -104,7 +104,7 @@ public class HomeFragment extends Fragment {
             });
 
     public void volleyGet(){
-        String url=R.string.url+"users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String url="http://192.168.1.10:5000/users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {

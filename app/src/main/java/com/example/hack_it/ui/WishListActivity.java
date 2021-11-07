@@ -84,13 +84,13 @@ public class WishListActivity extends AppCompatActivity {
     }
     public void volleyPost(ArrayList<ArrayList<String>> groupData){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String postUrl = R.string.url+"wishlist/";
+        String postUrl = "http://192.168.1.10:5000/wishlist/";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, postUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                customAdapter.notifyItemInserted(groupNames.size()-1);
+                customAdapter.notifyItemInserted(groupNames.size());
             }
         }, new Response.ErrorListener() {
             @Override
@@ -112,7 +112,7 @@ public class WishListActivity extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
     }
     public void volleyGet(){
-        String url=R.string.url+"users/"+FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String url="http://192.168.1.10:5000/users/"+FirebaseAuth.getInstance().getCurrentUser().getUid();
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {

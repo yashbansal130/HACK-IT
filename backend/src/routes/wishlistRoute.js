@@ -97,6 +97,7 @@ router.post('/', async (req, res) => {
       res.send({ msg: 'failure' });
     }
   } catch (error) {
+
     res.status(400).send({ msg: 'failure' });
   }
 });
@@ -128,7 +129,7 @@ router.post('/additem', async (req, res) => {
       res.send({ msg: 'failure' });
     }
   } catch (error) {
-    console.log(error.message);
+
     res.status(400).send({ msg: 'failure' });
   }
 });

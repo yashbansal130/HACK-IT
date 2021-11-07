@@ -113,7 +113,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String wishlistId = wishlist.get(i).second;
         String itemId = courseDataArrayList.get(pos).getId();
-        String url = R.string.url+"wishlist/additem";
+        String url = "http://192.168.1.10:5000/wishlist/additem";
 
         RequestQueue requestQueue = Volley.newRequestQueue(mcontext.getApplicationContext());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {

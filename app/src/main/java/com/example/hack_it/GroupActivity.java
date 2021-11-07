@@ -42,7 +42,7 @@ public class GroupActivity extends AppCompatActivity {
     }
 
     private void getData(String id) {
-        String url = R.string.url+"wishlist/" + id;
+        String url = "http://192.168.1.10:5000/wishlist/" + id;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -63,7 +63,7 @@ public class GroupActivity extends AppCompatActivity {
         getAll();
     }
     private void getAll() {
-        String url = R.string.url+"items/";
+        String url = "http://192.168.1.10:5000/items/";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override

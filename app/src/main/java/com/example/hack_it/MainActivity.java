@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     public DrawerLayout drawerLayout;
     private RequestQueue queue;
-    String userUrl = R.string.url+"users";
+    String userUrl = "http://192.168.1.10:5000/users";
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;

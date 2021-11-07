@@ -44,7 +44,7 @@ public class NewGroupActivity extends AppCompatActivity {
     RequestQueue requestQueue;
     Map<String , String> mails;
     Map<String , String> newMembers;
-    String url = R.string.url+"users";
+    String url = "http://192.168.1.10:5000/users";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
